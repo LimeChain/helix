@@ -9,7 +9,7 @@ use crate::{
     gossiper::{
         error::GossipError,
         traits::GossipClientTrait,
-        types::{BroadcastHeaderParams, BroadcastPayloadParams, BroadcastGetPayloadParams, GossipedMessage},
+        types::{BroadcastGetPayloadParams, BroadcastHeaderParams, BroadcastPayloadParams, GossipedMessage},
     },
     grpc::{
         self,
@@ -56,10 +56,7 @@ impl GrpcGossiperClient {
         });
     }
 
-    pub async fn broadcast_header(
-        &self,
-        request: grpc::BroadcastHeaderParams,
-    ) -> Result<(), GossipError> {
+    pub async fn broadcast_header(&self, request: grpc::BroadcastHeaderParams) -> Result<(), GossipError> {
         let request = Request::new(request);
         let client = {
             let client_guard = self.client.read().await;
@@ -84,10 +81,7 @@ impl GrpcGossiperClient {
         Ok(())
     }
 
-    pub async fn broadcast_payload(
-        &self,
-        request: grpc::BroadcastPayloadParams,
-    ) -> Result<(), GossipError> {
+    pub async fn broadcast_payload(&self, request: grpc::BroadcastPayloadParams) -> Result<(), GossipError> {
         let request = Request::new(request);
         let client = {
             let client_guard = self.client.read().await;
@@ -112,10 +106,7 @@ impl GrpcGossiperClient {
         Ok(())
     }
 
-    pub async fn broadcast_get_payload(
-        &self,
-        request: grpc::BroadcastGetPayloadParams,
-    ) -> Result<(), GossipError> {
+    pub async fn broadcast_get_payload(&self, request: grpc::BroadcastGetPayloadParams) -> Result<(), GossipError> {
         let request = Request::new(request);
         let client = {
             let client_guard = self.client.read().await;
@@ -164,7 +155,7 @@ impl GrpcGossiperClientManager {
     pub async fn start_server(&self, builder_api_sender: Sender<GossipedMessage>, proposer_api_sender: Sender<GossipedMessage>) {
         let service = GrpcGossiperService { builder_api_sender, proposer_api_sender };
 
-        let addr = "0.0.0.0:50051".parse().unwrap();
+        let addr = "0.0.0.0:50055".parse().unwrap();
         tokio::spawn(async move {
             tonic::transport::Server::builder()
                 .add_service(GossipServiceServer::new(service))
@@ -232,40 +223,25 @@ pub struct GrpcGossiperService {
 
 #[tonic::async_trait]
 impl GossipService for GrpcGossiperService {
-    async fn broadcast_header(
-        &self,
-        request: Request<grpc::BroadcastHeaderParams>,
-    ) -> Result<Response<()>, Status> {
+    async fn broadcast_header(&self, request: Request<grpc::BroadcastHeaderParams>) -> Result<Response<()>, Status> {
         let request = BroadcastHeaderParams::from_proto(request.into_inner());
-        if let Err(err) =
-            self.builder_api_sender.send(GossipedMessage::Header(Box::new(request))).await
-        {
+        if let Err(err) = self.builder_api_sender.send(GossipedMessage::Header(Box::new(request))).await {
             error!(err = %err, "failed to send header to builder");
         }
         Ok(Response::new(()))
     }
 
-    async fn broadcast_payload(
-        &self,
-        request: Request<grpc::BroadcastPayloadParams>,
-    ) -> Result<Response<()>, Status> {
+    async fn broadcast_payload(&self, request: Request<grpc::BroadcastPayloadParams>) -> Result<Response<()>, Status> {
         let request = BroadcastPayloadParams::from_proto(request.into_inner());
-        if let Err(err) =
-            self.builder_api_sender.send(GossipedMessage::Payload(Box::new(request))).await
-        {
+        if let Err(err) = self.builder_api_sender.send(GossipedMessage::Payload(Box::new(request))).await {
             error!(err = %err, "failed to send payload to builder");
         }
         Ok(Response::new(()))
     }
 
-    async fn broadcast_get_payload(
-        &self,
-        request: Request<grpc::BroadcastGetPayloadParams>,
-    ) -> Result<Response<()>, Status> {
+    async fn broadcast_get_payload(&self, request: Request<grpc::BroadcastGetPayloadParams>) -> Result<Response<()>, Status> {
         let request = BroadcastGetPayloadParams::from_proto(request.into_inner());
-        if let Err(err) =
-            self.proposer_api_sender.send(GossipedMessage::GetPayload(Box::new(request))).await
-        {
+        if let Err(err) = self.proposer_api_sender.send(GossipedMessage::GetPayload(Box::new(request))).await {
             error!(err = %err, "failed to send get payload to builder");
         }
         Ok(Response::new(()))
