@@ -10,14 +10,14 @@ redis:
 
 broadcasters: 
   - !BeaconClient
-    url: "http://127.0.0.1:<beacon_port>"
+    url: "http://127.0.0.1:51364"
 
 beacon_clients:
-  - url: "http://127.0.0.1:<beacon_port>"
+  - url: "http://127.0.0.1:51364"
 
 network_config: "Holesky"
 
 simulator: 
-  url: "http://127.0.0.1:<rpc_port>"
+  url: "http://127.0.0.1:51273"
 
 logging: "Console"
