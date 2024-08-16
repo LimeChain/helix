@@ -10,14 +10,18 @@ redis:
 
 broadcasters: 
   - !BeaconClient
-    url: "http://127.0.0.1:51364"
+    url: "http://127.0.0.1:<beacon_port>"
 
 beacon_clients:
-  - url: "http://127.0.0.1:51364"
+  - url: "http://127.0.0.1:<beacon_port>"
 
-network_config: "Holesky"
+network_config:
+  !Custom
+    dir_path: "/Users/vladimirtrifonov/src/rnd/taiko/helix/chain-info.yml"
+    genesis_validator_root: "0x68c9a86ac87db548086ed316fc4515355ff08e9b1e9a3361ab243584b933752f"
+    genesis_time: 1723733779
 
 simulator: 
-  url: "http://127.0.0.1:51273"
+  url: "http://127.0.0.1:<rpc_port>"
 
 logging: "Console"

@@ -795,11 +795,11 @@ where
             chain_id = election_req.chain_id(),
         );
 
-        if let Err(err) = proposer_api.validate_election_request(&mut election_req, slot_info.slot).await {
-            warn!(request_id = %request_id, ?err, "validation failed");
-            return Err(err);
-        }
-        trace.validation_complete = get_nanos_timestamp()?;
+        // if let Err(err) = proposer_api.validate_election_request(&mut election_req, slot_info.slot).await {
+        //     warn!(request_id = %request_id, ?err, "validation failed");
+        //     return Err(err);
+        // }
+        // trace.validation_complete = get_nanos_timestamp()?;
 
         // Save to constraints datastore
         // TODO: database
