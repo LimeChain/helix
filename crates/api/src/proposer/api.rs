@@ -841,14 +841,14 @@ where
             return Err(ProposerApiError::SetConstraintsTooLate { ns_into_slot: ns_into_slot as u64, cutoff: SET_CONSTRAINTS_CUTOFF_NS as u64 });
         }
 
-        let elected_public_key = elected_preconfer.preconfer_public_key();
+        // let elected_public_key = elected_preconfer.preconfer_public_key();
 
-        // Verify proposer signature
-        if let Err(err) =
-            verify_signed_builder_message(&mut constraints.message, &constraints.signature, elected_public_key, &self.chain_info.context)
-        {
-            return Err(ProposerApiError::InvalidSignature(err));
-        }
+        // // Verify proposer signature
+        // if let Err(err) =
+        //     verify_signed_builder_message(&mut constraints.message, &constraints.signature, elected_public_key, &self.chain_info.context)
+        // {
+        //     return Err(ProposerApiError::InvalidSignature(err));
+        // }
 
         Ok(())
     }

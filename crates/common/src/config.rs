@@ -149,6 +149,7 @@ impl RouterConfig {
             Route::GetTopBid,
             Route::SetConstraints,
             Route::ElectPreconfer,
+            Route::GetCurrentSlot,
         ]);
 
         self.replace_condensed_with_real(Route::ProposerApi, &[
@@ -231,6 +232,7 @@ pub enum Route {
     ElectPreconfer,
     GetPreconfer,
     GetPreconfersForEpoch,
+    GetCurrentSlot,
 }
 
 impl Route {
@@ -241,6 +243,7 @@ impl Route {
             Route::SubmitBlockOptimistic => format!("{PATH_BUILDER_API}{PATH_SUBMIT_BLOCK_OPTIMISTIC_V2}"),
             Route::SubmitHeader => format!("{PATH_BUILDER_API}{PATH_SUBMIT_HEADER}"),
             Route::GetTopBid => format!("{PATH_BUILDER_API}{PATH_GET_TOP_BID}"),
+            Route::GetCurrentSlot => format!("{PATH_BUILDER_API}{PATH_GET_CURRENT_SLOT}"),
 
             Route::Status => format!("{PATH_PROPOSER_API}{PATH_STATUS}"),
             Route::RegisterValidators => format!("{PATH_PROPOSER_API}{PATH_REGISTER_VALIDATORS}"),
