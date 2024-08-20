@@ -75,9 +75,6 @@ pub fn build_router(
             Route::GetTopBid => {
                 router = router.route(&route.path(), get(BuilderApiProd::get_top_bid));
             }
-            Route::GetCurrentSlot => {
-                router = router.route(&route.path(), get(BuilderApiProd::get_current_slot));
-            }
             Route::Status => {
                 router = router.route(&route.path(), get(ProposerApiProd::status));
             }
@@ -95,6 +92,9 @@ pub fn build_router(
             }
             Route::ElectPreconfer => {
                 router = router.route(&route.path(), post(ProposerApiProd::elect_preconfer));
+            }
+            Route::GetNextActiveSlot => {
+                router = router.route(&route.path(), get(ProposerApiProd::get_next_active_slot));
             }
             Route::ProposerPayloadDelivered => {
                 router = router.route(&route.path(), get(DataApiProd::proposer_payload_delivered));

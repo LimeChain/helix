@@ -510,15 +510,6 @@ where
         Ok(StatusCode::OK)
     }
 
-    pub async fn get_current_slot(
-        Extension(api): Extension<Arc<BuilderApi<A, DB, S, G>>>,
-        _: HeaderMap,
-    ) -> Result<impl IntoResponse, BuilderApiError> {
-        let (head_slot, _) = api.curr_slot_info.read().await.clone();
-
-        Ok(head_slot.to_string())
-    }
-
     /// Handles the submission of a new block by performing various checks and verifications
     /// before saving the submission to the auctioneer. This is expected to pair with submit_header.
     ///
