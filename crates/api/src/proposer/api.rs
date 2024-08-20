@@ -291,6 +291,7 @@ where
             }
 
             let handle = tokio::task::spawn_blocking(move || {
+                // TODO: Re-enable registration validation
                 // let res = match proposer_api_clone.validate_registration(&mut registration) {
                 //     Ok(_) => Some(registration),
                 //     Err(err) => {
@@ -831,11 +832,11 @@ where
             chain_id = election_req.chain_id(),
         );
 
-        // if let Err(err) = proposer_api.validate_election_request(&mut election_req, slot_info.slot).await {
-        //     warn!(request_id = %request_id, ?err, "validation failed");
-        //     return Err(err);
-        // }
-        // trace.validation_complete = get_nanos_timestamp()?;
+        if let Err(err) = proposer_api.validate_election_request(&mut election_req, slot_info.slot).await {
+            warn!(request_id = %request_id, ?err, "validation failed");
+            return Err(err);
+        }
+        trace.validation_complete = get_nanos_timestamp()?;
 
         // Save to constraints datastore
         // TODO: database
@@ -924,12 +925,13 @@ where
         // Drop the read lock guard to avoid holding it during signature verification
         drop(duties_read_guard);
 
+        // TODO: Uncomment when we have the ability to verify the signature
         // Verify proposer signature
-        if let Err(err) =
-            verify_signed_builder_message(&mut election_req.message, &election_req.signature, &proposer_pub_key, &self.chain_info.context)
-        {
-            return Err(ProposerApiError::InvalidSignature(err));
-        }
+        // if let Err(err) =
+        //     verify_signed_builder_message(&mut election_req.message, &election_req.signature, &proposer_pub_key, &self.chain_info.context)
+        // {
+        //     return Err(ProposerApiError::InvalidSignature(err));
+        // }
 
         Ok(())
     }
